@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Form Builder</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<head>
+<style>
+  #dest_copy {
+    padding: 1em;
+    padding-bottom: 70px;
+    border-radius: 20px;
+    border-width: 1px;
+    border-color: blue;
+
+  }
+
+  .keepstill {
+    position: fixed;
+    width: 450px;
+    padding: 35px;
+    margin-left: 50px;
+    border-radius: 30px;
+    background: #f0f0f0;
+    box-shadow: inset 5px 5px 10px #d1d1d1,
+                inset -5px -5px 10px #ffffff;
+  }
+  #src_copy, #src_copy2, #src_copy3, #src_copy4, #src_copy5, #src_copy7  {
+    border: none; /*1px solid black;*/
+    width: 400px;
+    height: 50;
+  }
+  #glipglop, #dest_move {
+    border-radius: 30px;
+    background: #e3e3e3;
+    width: 800px;
+    height: 50;
+    padding-bottom: 3em;
+    padding: 35px;
+    box-shadow: inset 5px 5px 10px #d1d1d1,
+                inset -5px -5px 10px #ffffff;
+  }
+  /*.row {
+    display: flex;
+  }
+*/
+  .toltip {
+    display: none;
+  }
+  .toltipAllowed * .toltip{
+    display: block;
+  }
+  /* Create two equal columns that sits next to each other
+  .column {
+    flex: 50%;
+    /*padding: 10px;*/
+/*  } */
+.labe {
+  width: 100%;
+  /*padding: 12px 20px;
+  margin: 8px 0;*/
+  box-sizing: border-box;
+  border: none;
+  background: none;
+
+}
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
+}
+
+/* Modal Content */
+.modal-content {
+  position: fixed;
+  bottom: 0;
+  background-color: #fefefe;
+  width: 100%;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s
+}
+
+/* The Close Button */
+.closeth {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.closeth:hover,
+.closeth:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+.modal-body {padding: 2px 16px;}
+.box{
+        color: #fff;
+        padding: 20px;
+        display: none;
+        margin-top: 20px;
+    }
+    .red{ background: #ff0000; }
+    .green{ background: #228B22; }
+    .blue{ background: #0000ff; }
+
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+<script>
+var count = 0;
+function dragstart_handler(ev) {
+ console.log("dragStart");
+ ev.currentTarget.style.border = "1px dashed";
+ ev.dataTransfer.setData("text", ev.target.id);
+ ev.effectAllowed = "copyMove";
+}
+function dragover_handler(ev) {
+ ev.currentTarget.style.background = "#f0f0f0";
+ ev.preventDefault();
+}
+function drop_handler(ev) {
+  ev.preventDefault();
+  var id = ev.dataTransfer.getData("text");
+  console.log(id);
+  if (ev.target.id == "dest_copy") {  //id == "src_copy" &&
+   var nodeCopy = document.getElementById(id).cloneNode(true);
+   var listName = document.getElementById("myPList");
+   count++;
+   nodeCopy.id = ["newId" + count];
+   listName.id = ["myList" + count];
+
+  if(document.getElementById(id).contains(document.getElementsByTagName("UL")[0])) {
+  nodeCopy.getElementsByTagName('ul')[0].id = "myList" + count;
+  } else if(document.getElementById(id).contains(document.getElementsByTagName("fieldset")[0])){
+  nodeCopy.getElementsByTagName('fieldset')[0].id = "group" + count;
+} else if(document.getElementById(id).contains(document.getElementsByTagName("select")[0])){
+  nodeCopy.getElementsByTagName('ul')[1].id = "myList" + count;
+  }
+   ev.target.appendChild(nodeCopy);
+ }
+
+}
+
+function dragend_handler(ev) {
+  console.log("dragEnd");
+ev.currentTarget.style.border = "none";
+  ev.dataTransfer.clearData();
+}
+function download(){
+    var a = document.body.appendChild(
+        document.createElement("a")
+    );
+    a.download = "export.html";
+    a.href = "data:text/html," + document.getElementById("dest_copy").innerHTML;
+    a.click();
+}
+
+</script>
+</head>
+<body data-new-gr-c-s-check-loaded="14.984.0" data-gr-ext-installed="" style="margin: 0px;">
+<h1>Form Builder <code>v1</code></h1>
+<div class="row">
+<div class="col">
+  <div class="keepstill">
+    <div draggable="true" id="src_copy7" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+           <input type="text" class="labe" id="" name="" value="Question"><br>
+    </div>
+    <hr class="solid">
+ <div draggable="true" id="src_copy" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+        <label for="fname"><input type="text" class="labe" id="" name="" value="Label"></label><br>
+        <input type="text" id="fname" name="fname" value="Input" readonly><br>
+ </div>
+ <hr class="solid">
+ <div draggable="true" id="src_copy2" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+        <label for="message"><input type="text" class="labe" id="" name="" value="Label"></label><br>
+        <textarea name="message" style="width:300px; height:100px;" readonly>The cat was playing in the garden.</textarea>
+ </div>
+ <hr class="solid">
+ <div draggable="true" id="src_copy3" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+   <div class="row">
+      <div class="col">
+        <fieldset id="group2">
+    <ul id="myList" style="list-style-type:none; padding-left: 0;">
+        <li><input type="radio" id="" name="" value="male" disabled>
+        <label for="male"> <input type="text" class="labe" id="" name="" value="Label"></label></li>
+    </ul>
+          </fieldset>
+  </div>
+    <div class="col">
+          <div class="toltip"><p id="myPList" onclick="myFunction2()">Add to list</p></div>
+  </div>
+  </div>
+ </div>
+ <hr class="solid">
+ <div draggable="true" id="src_copy4" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+   <div class="row">
+      <div class="col">
+        <fieldset id="group2">
+    <ul id="myList" style="list-style-type:none; padding-left: 0;">
+        <li><input type="checkbox" id="" name="vehicle1" value="Bike" disabled>   <!--fix-->
+        <label for="vehicle1"> <input type="text" class="labe" id="" name="" value="Label"></label></li>
+    </ul>
+          </fieldset>
+  </div>
+    <div class="col">
+          <div class="toltip"><p id="myPList" onclick="myFunction()">Add to list</p></div>
+  </div>
+  </div>
+ </div>
+
+<hr class="solid">
+ <div draggable="true" id="src_copy5" ondragstart="dragstart_handler(event);" ondragend="dragend_handler(event);">
+<div class="row">
+   <div class="col">
+     <ul style="list-style-type:none; padding-left: 0;">
+        <li><select name="cars" id="cars"><option value="volvo">Dropdown</option></select></li>
+     </ul>
+</div>
+<div class="col">
+      <div class="toltip">
+        <ul id="myList" style="list-style-type:none; padding-left: 0;">
+        <li><input type="text" id="fname" name="fname" value="Placeholder"></li>
+      </ul>
+      <p>options</p>
+    </div>
+</div>
+  <div class="col">
+        <div class="toltip"><p id="myPList" onclick="myFunction3()">Add to list</p></div>
+</div>
+</div>
+ </div>
+
+
+
+</div>
+</div>
+<div class="col">
+  <div id="glipglop">
+ <div id="dest_copy" class="toltipAllowed" ondrop="drop_handler(event);" ondragover="dragover_handler(event);"><h2><input type="text" class="labe" id="" name="" value="Form Name"></h2></div>
+ <p>Drag and drop form elements to the builder plane</p>
+ <button onClick="download()">Download</button>
+ <!-- Trigger/Open The Modal -->
+<button id="myBtn">Open Modal</button>
+
+</div>
+
+
+<!-- The Modal -->
+
+</div>
+
+</div>
+
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2> Form Actions</h2>
+      <span class="closeth">&times;</span>
+    </div>
+    <div class="modal-body">
+<div>
+        <select>
+            <option>Input Destination</option>
+            <option value="red">Email</option>
+            <option value="green">Database Table</option>
+            <option value="blue">PDF</option>
+        </select>
+    </div>
+    <div class="red box">Send Response as email</div>
+    <div class="green box">Send response to database</div>
+    <div class="blue box">Send Response to pdf</div>
+
+
+
+    </div>
+  </div>
+
+</div>
+<script>
+function myFunction() {
+  let li = document.createElement('li');
+        li.innerHTML = '<input type="checkbox" id="" name="" value="" disabled><label for=""> <input type="text" class="labe" id="" name="" value="Label"></label>';
+        document.querySelector("#myList2").appendChild(li);
+
+
+
+}
+function myFunction2() {
+  let li = document.createElement('li');
+        li.innerHTML = '<input type="radio" id="" name="" value="" disabled><label for=""> <input type="text" class="labe" id="" name="" value="Label"></label>';
+        //const divToAppend = document.getElementById("dest_copy");
+        var pID = document.querySelector("#myPList");
+        console.log(pID);
+        if(pID) {
+        var listName = document.querySelector("#myList1");
+        document.querySelector("#myList1").appendChild(li);
+        listName.id = pID;
+      }
+        console.log('EVENT', event.target);
+}
+
+function myFunction3() {
+  let li = document.createElement('li');
+        li.innerHTML = '<input type="text" id="fname" name="fname" value="Placeholder">';
+        document.querySelector("#myList2").appendChild(li);
+}
+</script>
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("closeth")[0];
+
+// When the user clicks the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+<script>
+$(document).ready(function(){
+    $("select").change(function(){
+        $(this).find("option:selected").each(function(){
+            var optionValue = $(this).attr("value");
+            if(optionValue){
+                $(".box").not("." + optionValue).hide();
+                $("." + optionValue).show();
+            } else{
+                $(".box").hide();
+            }
+        });
+    }).change();
+});
+</script>
+</body></html>
